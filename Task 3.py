@@ -91,7 +91,7 @@ def create_box_plot(path):
     plt.savefig(f"box_plots/{filename}-1000.png")
 
 def create_plots_for_all_sensors():
-    for path in paths[219:]: 
+    for path in paths: 
         start_time = np.floor(time.time() * 1000)
         create_box_plot(path)
         print("Total duration for 1 plot: ", np.floor(time.time() * 1000) - start_time)
