@@ -47,7 +47,9 @@ def get_nearest_indices(query_point):
     return indices[0]
 
 def get_nearest_name(index):
-    return sensor_positions.iloc[index]['name']
+    location, name = sensor_positions.iloc[index]
+    print(location, name)
+    return name
 
 def get_main_df(name):
     return set_time_as_index(get_data_with_nans(get_dataframe_without_duplicates(get_sensor_data(name))))
@@ -59,9 +61,13 @@ def get_nearest_df(name):
 # What should I do with the ones that have no values in three nearest ones?
 # Should I save the values in some other csv file?
 
+# used https://latitude.to/ to check the distances
+
 # Create 5 tables of randomly picked locations and their nearest neighbor db values
 for i in [10, 47, 68, 150, 241]:
     location, name = sensor_positions.iloc[i]
+    print("==================================")
+    print(location, name, "<= MAIN")
     nearest_indices = get_nearest_indices(location)
 
     main_df = get_main_df(name)
