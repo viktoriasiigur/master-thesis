@@ -55,7 +55,7 @@ def bland_altman_plot(method1, method2, amount_1, amount_2):
     plt.ylabel('dB differences')
     plt.xticks(np.arange(0, 24, 1))
     plt.grid(alpha=0.5)
-    plt.savefig(f"bland-altman-{amount_1}-vs-{amount_2}.png")
+    plt.savefig(f"bland-altman/bland-altman-{amount_1}-vs-{amount_2}.png")
     
 def get_all_sensors_df():
     full_df = pd.DataFrame()
