@@ -27,7 +27,7 @@ sensor_positions["location"] = sensor_positions["location"].apply(set_correct_ty
 
 
 def get_data_with_nans(df):
-    full_time_range = pd.date_range(start=df["Time"].min(), end=df["Time"].max(), freq="min")
+    full_time_range = pd.date_range(start="2022-08-14 00:00:00", end="2022-08-14 23:59:00", freq="min")
     df = df.set_index("Time").reindex(full_time_range)
     df = df.rename_axis("Time").reset_index()
     df["time_diff"] = df["Time"].diff().dt.total_seconds()
@@ -61,66 +61,26 @@ def get_nearest_indices(query_point):
 
 def get_nearest_name(index):
     location, name = sensor_positions.iloc[index]
-    print(location, name)
     return name
 
 def get_main_df(name):
     return set_time_as_index(set_hour_minute_columns(get_data_with_nans(get_dataframe_without_duplicates(get_sensor_data(name)))))
 
-def get_nearest_df(name):
-    return set_time_as_index(get_dataframe_without_duplicates(get_sensor_data(name)))
 
+# ============== GENERATE SELF IMPUTED DATA ===================
 
-
-# ============== IMPUTE DATA ===================
 def get_medians(group):
     if (group.notna().any()):
         return np.ceil(group.median())
 
-def get_imputed_data(df, column="dt_sound_level_dB"):
-    group = df.groupby(["hour", "minute"])[column]
+def get_imputed_data(df):
+    group = df.groupby(["hour", "minute"])["dt_sound_level_dB"]
     imputed_values = group.transform(get_medians)
     if imputed_values.isna().any():
         imputed_values = imputed_values.interpolate(method="linear", limit_direction="both").round()
         
-    df[column] = df[column].fillna(imputed_values)
+    df["dt_sound_level_dB"] = df["dt_sound_level_dB"].fillna(imputed_values)
     return df
-
-# ============== IMPUTE DATA ===================
-
-
-# Create 5 tables of randomly picked locations and their nearest neighbor db values
-# for i in [10, 47, 68, 150, 241]:
-#     location, name = sensor_positions.iloc[i]
-#     print("==================================")
-#     print(location, name, "<= MAIN")
-#     nearest_indices = get_nearest_indices(location)
-
-#     main_df = get_main_df(name)
-
-#     print(main_df.index)
-
-#     for nearest_index in nearest_indices:
-#         sensor_name = get_nearest_name(nearest_index)
-#         df_of_nearest = get_nearest_df(get_nearest_name(nearest_index))
-#         main_df[sensor_name] = get_imputed_data(df_of_nearest)
-
-    
-#     print(main_df)
-
-    # 0th index is itself
-    # first_nearest_df = get_nearest_df(get_nearest_name(nearest_indices[1]))
-    # second_nearest_df = get_nearest_df(get_nearest_name(nearest_indices[2]))
-    # third_nearest_df = get_nearest_df(get_nearest_name(nearest_indices[3]))
-
-    # main_df['db_first_nearest'] = first_nearest_df['dt_sound_level_dB']
-    # main_df['db_second_nearest'] = second_nearest_df['dt_sound_level_dB']
-    # main_df['db_third_nearest'] = third_nearest_df['dt_sound_level_dB']
-
-    # main_df.to_csv(f'nearest/{name}-nearest.csv')
-    
-    
-# ============== GENERATE SELF IMPUTED DATA ===================
 
 def generate_self_imputed_data():
     for _, name in sensor_positions.values:
@@ -136,7 +96,20 @@ generate_self_imputed_data()
 
 # ============== GENERATE NEAREST IMPUTED DATA ===================
 
-# def generate_nearest_imputed_data():
+
+
+def generate_nearest_imputed_data():
+    for location, name in sensor_positions.values[:2]:
+        main_df = get_main_df(name)
+        nearest_indices = get_nearest_indices(location)
+        for nearest_index in nearest_indices:
+            nearest_name = get_nearest_name(nearest_index)
+            df_of_imputed_nearest = set_time_as_index(pd.DataFrame(pd.read_csv(f"imputed_data/self/{nearest_name}-self.csv")))
+            main_df[f"{nearest_name}_nearest"] = df_of_imputed_nearest
+
+# generate_nearest_imputed_data()
+
+
 #     for location, name in sensor_positions.values[:2]:
 #         main_df = get_main_df(name) 
 #         nearest_indices = get_nearest_indices(location)
