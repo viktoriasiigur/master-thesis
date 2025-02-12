@@ -89,7 +89,7 @@ def generate_self_imputed_data():
         imputed_df = imputed_df.drop(columns=["hour", "minute"])
         imputed_df.to_csv(f'imputed_data/self/{name}-self.csv')
 
-generate_self_imputed_data()
+# generate_self_imputed_data()
 
 # ============== GENERATE SELF IMPUTED DATA ===================
 
@@ -118,7 +118,7 @@ def generate_nearest_imputed_data():
         main_df = main_df[["dt_sound_level_dB"]]
         main_df.to_csv(f'imputed_data/nearest/{name}-nearest.csv')
 
-# generate_nearest_imputed_data()
+generate_nearest_imputed_data()
 
 
 # ============== GENERATE NEAREST IMPUTED DATA ===================
