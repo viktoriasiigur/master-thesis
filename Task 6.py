@@ -27,7 +27,7 @@ sensor_positions["location"] = sensor_positions["location"].apply(set_correct_ty
 
 
 def get_data_with_nans(df):
-    full_time_range = pd.date_range(start="2022-08-14 00:00:00", end="2022-08-14 23:59:00", freq="min")
+    full_time_range = pd.date_range(start="2022-08-01 00:00:00", end="2022-08-14 23:59:00", freq="min")
     df = df.set_index("Time").reindex(full_time_range)
     df = df.rename_axis("Time").reset_index()
     df["time_diff"] = df["Time"].diff().dt.total_seconds()
@@ -89,7 +89,7 @@ def generate_self_imputed_data():
         imputed_df = imputed_df.drop(columns=["hour", "minute"])
         imputed_df.to_csv(f'imputed_data/self/{name}-self.csv')
 
-# generate_self_imputed_data()
+generate_self_imputed_data()
 
 # ============== GENERATE SELF IMPUTED DATA ===================
 
@@ -118,7 +118,7 @@ def generate_nearest_imputed_data():
         main_df = main_df[["dt_sound_level_dB"]]
         main_df.to_csv(f'imputed_data/nearest/{name}-nearest.csv')
 
-generate_nearest_imputed_data()
+# generate_nearest_imputed_data()
 
 
 # ============== GENERATE NEAREST IMPUTED DATA ===================
