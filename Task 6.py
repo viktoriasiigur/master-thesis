@@ -89,43 +89,36 @@ def generate_self_imputed_data():
         imputed_df = imputed_df.drop(columns=["hour", "minute"])
         imputed_df.to_csv(f'imputed_data/self/{name}-self.csv')
 
-generate_self_imputed_data()
+# generate_self_imputed_data()
 
 # ============== GENERATE SELF IMPUTED DATA ===================
 
 
 # ============== GENERATE NEAREST IMPUTED DATA ===================
+# NB! Self is included in nearest.
 
-
+def get_imputed_self_data_from_csv(name):
+    df = pd.DataFrame(pd.read_csv(f"imputed_data/self/{name}-self.csv"))
+    df["Time"] = pd.to_datetime(df["Time"])
+    df = set_time_as_index(df)
+    return df
 
 def generate_nearest_imputed_data():
-    for location, name in sensor_positions.values[:2]:
+    for location, name in sensor_positions.values:
         main_df = get_main_df(name)
         nearest_indices = get_nearest_indices(location)
         for nearest_index in nearest_indices:
             nearest_name = get_nearest_name(nearest_index)
-            df_of_imputed_nearest = set_time_as_index(pd.DataFrame(pd.read_csv(f"imputed_data/self/{nearest_name}-self.csv")))
-            main_df[f"{nearest_name}_nearest"] = df_of_imputed_nearest
+            df_of_imputed_nearest = get_imputed_self_data_from_csv(nearest_name)
+            main_df[f"{nearest_name}_nearest"] = df_of_imputed_nearest["dt_sound_level_dB"]
 
-# generate_nearest_imputed_data()
+        nearest_columns = main_df.filter(like="_nearest")
+        medians_of_nearest = nearest_columns.median(axis=1).round()
+        main_df["dt_sound_level_dB"] = main_df["dt_sound_level_dB"].fillna(medians_of_nearest)
+        main_df = main_df[["dt_sound_level_dB"]]
+        main_df.to_csv(f'imputed_data/nearest/{name}-nearest.csv')
 
-
-#     for location, name in sensor_positions.values[:2]:
-#         main_df = get_main_df(name) 
-#         nearest_indices = get_nearest_indices(location)
-#         for nearest_index in nearest_indices:
-#             nearest_name = get_nearest_name(nearest_index)
-#             df_of_nearest = get_nearest_df(nearest_name)
-#             main_df[f"{nearest_name}_nearest"] = df_of_nearest
-
-#         for col in main_df.filter(like="_nearest").columns:
-#             main_df = get_imputed_data(main_df, col)
+generate_nearest_imputed_data()
 
 
-#         print(main_df)
-#         # imputed_df = imputed_df.drop(columns=["hour", "minute"])
-#         # imputed_df.to_csv(f'imputed_data/nearest/{name}-nearest.csv')
-
-# # ============== GENERATE NEAREST IMPUTED DATA ===================
-
-# generate_nearest_imputed_data()
+# ============== GENERATE NEAREST IMPUTED DATA ===================

@@ -20,3 +20,9 @@
 2. Impute all the sensor in this circle
 3. Switch main sensors imputation with the median value of all of these. (round median values up)
 4. Do bland altman plot of one sensor imputation vs nearest sensor imputation
+
+# TODO Ideas
+Find a proper treshold for finding nearest neighbors
+* Check all the sensors and their closest neighbors
+* Find the longest distance between two sensors
+"""
