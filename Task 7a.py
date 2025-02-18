@@ -33,7 +33,7 @@ def get_combined_self_imputed_data():
 def get_combined_nearest_imputed_data():
     full_df = pd.DataFrame()
     for _, name in sensor_positions.values:
-        df = get_clean_dataframe(f'imputed_data/nearest/{name}-nearest.csv')
+        df = get_clean_dataframe(f'imputed_data/nearest-k-1/{name}-nearest.csv')
         full_df = pd.concat([full_df, df], ignore_index=True)
     return full_df
 
@@ -55,7 +55,6 @@ def get_samples_median(df, count):
 
 def bland_altman_plot(method1, method2, description_1, description_2):
     merged = pd.merge(method1, method2, on='hour', suffixes=('_1', '_2'))
-    print(merged)
     method1_db_as_array = np.asarray(merged['dt_sound_level_dB_1'])
     method2_db_as_array = np.asarray(merged['dt_sound_level_dB_2'])
 
@@ -77,10 +76,10 @@ def bland_altman_plot(method1, method2, description_1, description_2):
     plt.savefig(f"imputed_data/bland-altman-{description_1}-vs-{description_2}.png")
 
 
-real_samples = get_samples_median(real_df, 1000)
-self_samples = get_samples_median(self_imputed_df, 1000)
-nearest_samples = get_samples_median(nearest_imputed_df, 1000)
+real_samples = get_samples_median(real_df, 100)
+self_samples = get_samples_median(self_imputed_df, 100)
+nearest_samples = get_samples_median(nearest_imputed_df, 100)
 
 bland_altman_plot(real_samples, self_samples, "real", "self_imputed")
-bland_altman_plot(real_samples, nearest_samples, "real", "nearest_imputed")
-bland_altman_plot(self_samples, nearest_samples, "self_imputed", "nearest_imputed")
+bland_altman_plot(real_samples, nearest_samples, "real", "nearest_k_1_imputed")
+bland_altman_plot(self_samples, nearest_samples, "self_imputed", "nearest_k_1_imputed")
