@@ -21,8 +21,17 @@
 3. Switch main sensors imputation with the median value of all of these. (round median values up)
 4. Do bland altman plot of one sensor imputation vs nearest sensor imputation
 
+Task 6 has bad outcome since there are sensors that have no neighbors in 110 treshold
+
 # TODO Ideas
 Find a proper treshold for finding nearest neighbors
 * Check all the sensors and their closest neighbors
 * Find the longest distance between two sensors
 """
+
+
+## Task 7
+1. Take 1 nearest neigbor and to task 6 the same way
+
+## Task 8
+1.
