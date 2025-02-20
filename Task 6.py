@@ -104,6 +104,7 @@ def get_imputed_self_data_from_csv(name):
     return df
 
 def generate_nearest_imputed_data():
+    names = []
     for location, name in sensor_positions.values:
         main_df = get_main_df(name)
         nearest_indices = get_nearest_indices(location)
@@ -119,6 +120,9 @@ def generate_nearest_imputed_data():
         main_df["dt_sound_level_dB"] = main_df["dt_sound_level_dB"].fillna(medians_of_nearest)
         main_df = main_df[["dt_sound_level_dB"]]
         main_df.to_csv(f'imputed_data/nearest/{name}-nearest.csv')
+        names.append(name)
+    print(names)
+        
 
 generate_nearest_imputed_data()
 
