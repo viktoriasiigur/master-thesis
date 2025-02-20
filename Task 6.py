@@ -107,6 +107,7 @@ def generate_nearest_imputed_data():
     for location, name in sensor_positions.values:
         main_df = get_main_df(name)
         nearest_indices = get_nearest_indices(location)
+            continue
         for nearest_index in nearest_indices:
             nearest_name = get_nearest_name(nearest_index)
             df_of_imputed_nearest = get_imputed_self_data_from_csv(nearest_name)
