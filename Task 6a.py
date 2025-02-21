@@ -76,10 +76,10 @@ def bland_altman_plot(method1, method2, description_1, description_2):
     plt.savefig(f"imputed_data/bland-altman-{description_1}-vs-{description_2}.png")
 
 
-real_samples = get_samples_median(real_df, 100)
-self_samples = get_samples_median(self_imputed_df, 100)
-nearest_samples = get_samples_median(nearest_imputed_df, 100)
+real_samples = get_samples_median(real_df, 3650)
+self_samples = get_samples_median(self_imputed_df, 10000)
+nearest_samples = get_samples_median(nearest_imputed_df, 10000)
 
-bland_altman_plot(real_samples, self_samples, "real", "self_imputed")
-bland_altman_plot(real_samples, nearest_samples, "real", "nearest_imputed")
-# bland_altman_plot(self_samples, nearest_samples, "self_imputed", "nearest_imputed")
+# bland_altman_plot(real_samples, self_samples, "real", "self_imputed")
+# bland_altman_plot(real_samples, nearest_samples, "real", "nearest_imputed")
+bland_altman_plot(self_samples, nearest_samples, "self_imputed", "nearest_imputed")

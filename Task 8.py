@@ -49,15 +49,36 @@ def get_samples_median(df, count):
     medians = samples_grouped_by_hour['dt_sound_level_dB'].median().reset_index()
     return medians
 
-real_medians = get_samples_median(real, 10)
-self_medians = get_samples_median(self, 10)
-nearest_medians = get_samples_median(nearest, 10)
-
-print(nearest_medians['dt_sound_level_dB'] - self_medians['dt_sound_level_dB'])
-
-## Shouln't it make sense that it goes to zero, because I have negative and positive values and the median of those will be zero anyway if i take bunch of them?
-
 def get_median_of_hour_per_count(count):
     self_medians = get_samples_median(self, count)
     nearest_medians = get_samples_median(nearest, count)
-    
+    return self_medians['dt_sound_level_dB'] - nearest_medians['dt_sound_level_dB']
+
+
+def get_table_of_hours_and_occurrences():
+    counts = list(range(10, 3650, 10))
+    df = pd.DataFrame(index=range(24), columns=counts)
+    for count in counts:
+        median_diff = get_median_of_hour_per_count(count)
+        df[count] = median_diff.values 
+    df.to_csv('histogram_data.csv')
+
+# get_table_of_hours_and_occurrences()
+
+def get_histograms():
+    df = pd.read_csv('histogram_data.csv', index_col=0)
+    print(df)
+    for hour in df.index[:1]:
+        hour_df = df.loc[hour]
+        plt.figure(figsize=(8, 4))
+        plt.hist(df.loc[hour], bins=30, orientation="horizontal")
+
+        plt.ylabel("Median difference (dB)")
+        plt.xlabel("Count")
+        plt.title(f"Histogram for hour {hour}")
+        plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+        plt.savefig(f"imputed_data/histograms/histogram_hour_{hour}.png")
+        plt.close()
+
+get_histograms()

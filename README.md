@@ -30,8 +30,8 @@ Find a proper treshold for finding nearest neighbors
 """
 
 
-## Task 7
-1. Take 1 nearest neigbor and to task 6 the same way
-
-## Task 8
-1.
+## Task 9
+1. Take the median of each hour of one sensor
+2. Treshold is 0.5
+3. Take the same sensor's self imputed values
+4. Start with the small amount of days and see where the self imputed data reaches the treshold (get the medians each hour of 1 day, 2 days, 4 days... and compare them with real data)
