@@ -35,3 +35,12 @@ Find a proper treshold for finding nearest neighbors
 2. Treshold is 0.5
 3. Take the same sensor's self imputed values
 4. Start with the small amount of days and see where the self imputed data reaches the treshold (get the medians each hour of 1 day, 2 days, 4 days... and compare them with real data)
+
+
+
+
+######## IMPORTANT STEPS
+
+1. Analyze stage - you analyze each sensor and their hourly values.
+If the hour is over, you take the median value (round it up) and then compare it with the previous days value
+If the diffs are getting stable, it means that will be the best guess for imputation, in case there will be no values 
